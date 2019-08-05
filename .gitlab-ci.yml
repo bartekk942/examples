@@ -1,0 +1,52 @@
+image: dockerhub.grinndev.ovh/grinn/ci-buildroot:2.0
+
+variables:
+  BUILDROOT_VERSION: 2019.05.1
+
+.defconfig:
+  stage: build
+  tags:
+    - grunner
+    - medium
+  script:
+    - echo 'Download Buildroot'
+    - wget https://nexus.grinndev.ovh/repository/br2-all/buildroot-$BUILDROOT_VERSION.tar.gz
+    - tar xf buildroot-$BUILDROOT_VERSION.tar.gz
+    - mv buildroot-$BUILDROOT_VERSION buildroot
+    - echo 'Configure Buildroot'
+    - cd buildroot
+    - BR2_EXTERNAL=.. brmake O=../output-${CI_JOB_NAME} ${CI_JOB_NAME}_defconfig
+    - echo 'Build buildroot'
+    - brmake O=../output-${CI_JOB_NAME} all legal-info graph-build graph-size
+  artifacts:
+    when: always
+    paths:
+      - output-${CI_JOB_NAME}/.config
+      - output-${CI_JOB_NAME}/graphs/*.pdf
+      - output-${CI_JOB_NAME}/images/sdcard*.img
+
+grinn_chiliboard_2g: { extends: .defconfig }
+grinn_chiliboard_4g: { extends: .defconfig }
+grinn_chiliboard_lcd_res: { extends: .defconfig }
+grinn_chiliboard_relay: { extends: .defconfig }
+grinn_chiliboard_serial: { extends: .defconfig }
+grinn_liteboard_2g: { extends: .defconfig }
+grinn_liteboard_4g: { extends: .defconfig }
+grinn_liteboard_barebox: { extends: .defconfig }
+grinn_liteboard_can: { extends: .defconfig }
+grinn_liteboard_lcd_res: { extends: .defconfig }
+grinn_liteboard_relay: { extends: .defconfig }
+grinn_liteboard_serial: { extends: .defconfig }
+grinn_liteboard_spi: { extends: .defconfig }
+grinn_liteboard_telit: { extends: .defconfig }
+grinn_loragw: { extends: .defconfig }
+
+gitlint:
+  stage: build
+  tags:
+    - grunner
+  script:
+    - pip3 install gitlint
+    - gitlint --commits origin/master..
+  except:
+    - master
