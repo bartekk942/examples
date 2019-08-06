@@ -1,0 +1,1 @@
+CONFIG_DEFAULT_FDT_FILE="am335x-chiliboard-relay.dtb"
