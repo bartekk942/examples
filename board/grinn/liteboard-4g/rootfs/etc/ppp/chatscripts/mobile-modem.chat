@@ -1,3 +1,5 @@
+ABORT 'ERROR'
+ABORT '+CME ERROR'
 ABORT 'BUSY'
 ABORT 'NO CARRIER'
 ABORT 'VOICE'
@@ -10,6 +12,10 @@ TIMEOUT 6
 '' 'ATQ0'
 'OK-AT-OK' 'ATZ'
 TIMEOUT 3
+
+# Verbose errors
+'OK' AT+CMEE=2
+
 'OK' @/etc/ppp/chatscripts/pin
 'OK\d-AT-OK' 'ATI'
 'OK' 'ATZ'
